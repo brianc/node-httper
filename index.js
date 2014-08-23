@@ -49,4 +49,7 @@ var httpTest = module.exports = function(app, cb) {
   return client
 }
 
-httpTest.request = require('request')
+httpTest.request = require('request').defaults({
+  jar: true,
+  followRedirect: false
+})
