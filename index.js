@@ -10,12 +10,22 @@ var Client = function(app) {
   this.put = this.req.bind(this, 'PUT')
   this.delete = this.req.bind(this, 'DELETE')
   this.head = this.req.bind(this, 'HEAD')
+  this.authenticate = false;
+  this.request = require('request').defaults({
+    jar: true,
+    followRedirect: false
+  })
 }
 
 Client.prototype.start = function(cb) {
   var self = this
   this.server = http.createServer(this.app)
   this.server.listen(function() {
+    if(self.authenticate) {
+      return self.authenticate(function(err) {
+        cb(err, self)
+      })
+    }
     cb(null, self)
   })
 }
@@ -38,7 +48,7 @@ Client.prototype.req = function(method, path, options, cb) {
   }
   options.method = method
   options.url = this.url(path)
-  httpTest.request(options, cb)
+  this.request(options, cb)
 }
 
 var httpTest = module.exports = function(app, cb) {
@@ -48,8 +58,3 @@ var httpTest = module.exports = function(app, cb) {
   }
   return client
 }
-
-httpTest.request = require('request').defaults({
-  jar: true,
-  followRedirect: false
-})

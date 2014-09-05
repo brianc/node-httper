@@ -47,9 +47,44 @@ describe('httping', function() {
 
   describe('root url', function() {
     it('can make request to string url', function(done) {
-      var client = httping('https://google.com')
-      client.get('/', function(err, res) {
+      var headers = {
+        'accept-encoding': 'text/html'
+      }
+      var client = httping('https://github.com')
+      client.get('/', {headers: headers}, function(err, res) {
         assert.ifError(err, 'request to google failed')
+        assert.equal(res.statusCode, 200)
+        done()
+      })
+    })
+  })
+
+  describe('unauthenticated', function() {
+    var client = httping(require('./app'))
+    before(client.start)
+    after(client.stop)
+
+    it('wont log in without being configured', function(done) {
+      client.get('/secure', function(err, res) {
+        if(err) return done(err)
+        assert.equal(res.statusCode, 401)
+        done()
+      })
+    })
+  })
+
+  describe('authentication', function() {
+    var client = httping(require('./app'))
+    before(client.start)
+    after(client.stop)
+    client.authenticate = function(cb) {
+      client.post('/login', {json: {username: 'Bob'}}, function(err) {
+        return cb(err)
+      })
+    }
+
+    it('works', function(done) {
+      client.get('/secure', function(err, res) {
         assert.equal(res.statusCode, 200)
         done()
       })

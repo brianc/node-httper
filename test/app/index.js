@@ -1,8 +1,10 @@
 var express = require('express')
 var app = module.exports = express()
 var bodyParser = require('body-parser')
+var cookieParser = require('cookie-parser')
 
 app.use(bodyParser.json())
+app.use(cookieParser())
 
 app.get('/204', function(req, res, next) {
   res.status(204).end()
@@ -17,3 +19,15 @@ var echo = function(method) {
 echo('post')
 echo('put')
 echo('delete')
+
+app.post('/login', function(req, res, next) {
+  res.cookie('auth', {username: req.body.username})
+  res.status(200).end()
+})
+
+app.get('/secure', function(req, res, next) {
+  if(!req.cookies.auth) {
+    return res.status(401).end()
+  }
+  return res.send({username: req.cookies.auth.username})
+})
