@@ -1,6 +1,6 @@
 {
   "name": "httper",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Little http client for urls and http listeners",
   "main": "index.js",
   "scripts": {
