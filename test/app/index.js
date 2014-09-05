@@ -31,3 +31,8 @@ app.get('/secure', function(req, res, next) {
   }
   return res.send({username: req.cookies.auth.username})
 })
+
+app.get('/only-accept-testing-header', function(req, res, next) {
+  var good = (req.headers['content-type']||'').indexOf('testing') > -1
+  return res.status(good ? 200 : 501).end()
+})

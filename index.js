@@ -10,6 +10,9 @@ var Client = function(app) {
   this.put = this.req.bind(this, 'PUT')
   this.delete = this.req.bind(this, 'DELETE')
   this.head = this.req.bind(this, 'HEAD')
+  this.before = function(options) {
+    return options
+  }
   this.request = require('request').defaults({
     jar: true,
     followRedirect: false
@@ -42,7 +45,7 @@ Client.prototype.req = function(method, path, options, cb) {
   }
   options.method = method
   options.url = this.url(path)
-  this.request(options, cb)
+  this.request(this.before(options) || options, cb)
 }
 
 var httpTest = module.exports = function(app, cb) {

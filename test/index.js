@@ -92,5 +92,39 @@ describe('httping', function() {
       })
     })
   })
+
+  describe('before callback', function() {
+    var client = httping(require('./app'))
+    before(client.start)
+    after(client.stop)
+
+    it('calls the callback with options', function(done) {
+      client.before = function(options) {
+        assert.equal(options.method, 'GET')
+        done()
+      }
+      client.get('/', function() {})
+    })
+
+    it('without header we get 501', function(done) {
+      client.before = function() {}
+      client.get('/only-accept-testing-header', function(err, res) {
+        assert.equal(res.statusCode, 501)
+        done()
+      })
+    })
+
+    it('passes the options to the request', function(done) {
+      client.before = function(options) {
+        options.headers = options.headers || {}
+        options.headers['content-type'] = 'text/testing'
+      }
+      client.get('/only-accept-testing-header', function(err, res) {
+        assert.ifError(err)
+        assert.equal(res.statusCode, 200)
+        done()
+      })
+    })
+  })
 })
 
