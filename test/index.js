@@ -77,11 +77,13 @@ describe('httping', function() {
     var client = httping(require('./app'))
     before(client.start)
     after(client.stop)
-    client.authenticate = function(cb) {
-      client.post('/login', {json: {username: 'Bob'}}, function(err) {
-        return cb(err)
+
+    it('authenticates', function(done) {
+      client.post('/login', {json: {username: 'Bob'}}, function(err, res) {
+        assert.equal(res.statusCode, 200)
+        done()
       })
-    }
+    })
 
     it('works', function(done) {
       client.get('/secure', function(err, res) {
