@@ -33,7 +33,7 @@ describe('httping', function() {
     before(app.start)
     after(app.stop)
 
-    var methods = ['post', 'put', 'delete']
+    var methods = ['post', 'put', 'delete', 'patch']
     methods.forEach(function(method) {
       it('can ' + method, function(done) {
         var json = {name: 'brian ' + method}

@@ -19,6 +19,7 @@ var echo = function(method) {
 echo('post')
 echo('put')
 echo('delete')
+echo('patch')
 
 app.post('/login', function(req, res, next) {
   res.cookie('auth', {username: req.body.username})
