@@ -8,6 +8,7 @@ var Client = function(app) {
   this.get = this.req.bind(this, 'GET')
   this.post = this.req.bind(this, 'POST')
   this.put = this.req.bind(this, 'PUT')
+  this.patch = this.req.bind(this, 'PATCH')
   this.delete = this.req.bind(this, 'DELETE')
   this.head = this.req.bind(this, 'HEAD')
   this.before = function(options) {
